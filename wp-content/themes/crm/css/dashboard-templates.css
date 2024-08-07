@@ -1,0 +1,357 @@
+div#page {
+    width: 100%;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+ul,
+li{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+body {
+    display: flex;
+    min-height: 100vh;
+}
+html {
+    margin: 0 !important;
+}
+header#masthead {
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    left: 0;
+    background: #fff;
+    box-shadow: 3px 5px 20px rgb(0 83 119 / 9%);
+}
+.dashboard-container {
+    display: flex;
+    width: 100%;
+    margin-top: 64px;
+}
+
+.sidebar {
+    background-color: var(--primary-color);
+    color: #ecf0f1;
+    width: 250px;
+    padding: 20px;
+    position: fixed;
+    height: calc(100vh - 64px);
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    margin-bottom: 30px;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+}
+
+.sidebar-nav ul li a {
+    margin-bottom: 10px;
+    padding: 8px 15px 8px 15px;
+    border-radius: 10px;
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+}
+.sidebar-nav ul li.active a,
+.sidebar-nav ul li a:hover{
+    background: #0f709b;
+}
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+}
+
+.header {
+    background-color: #005377;
+    color: #ecf0f1;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+.header h1 {
+    margin: 0;
+}
+.card {
+    margin-bottom: 25px;
+    border: 1px solid #E6E9EB !important;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0px 9px 20px rgba(46, 35, 94, 0.07);
+    box-shadow: 0px 9px 20px rgba(46, 35, 94, 0.07);
+}
+.card .card-header {
+    background-color: #fff;
+    padding: 20px;
+    border-bottom: 1px solid #ecf3fa;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    position: relative;
+}
+.card .card-body {
+    padding: 20px;
+        flex: 1 1 auto;
+    background-color: transparent;
+}
+
+.card-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #051a1a;
+}
+.form-row .form-group .form-control {
+    display: block;
+    width: 100%;
+    padding: 0.575rem 0.75rem;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: none;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #dee2e6;
+    appearance: none;
+    border-radius: 0.357rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.form-row .form-group label {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0 0 5px;
+    display: block;
+}
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+.form-row .w-33 {
+    width: calc(33.33% - 16px);
+}
+.form-row .w-100 {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+}
+
+.repeater-item {
+    display: flex;
+    margin-bottom: 10px;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.entity-name {
+    flex: 2;
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #00bfff;
+    border-radius: 4px;
+}
+
+.entity-type {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #00bfff;
+    border-radius: 4px;
+    color: #00bfff;
+}
+.remove-button {
+    padding: 5px 10px;
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 44px;
+    width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.remove-button svg {
+    width: 30px;
+    height: auto;
+}
+#submit-button {
+    display: block;
+    /* margin: 20px auto; */
+    padding: 10px 20px;
+    background-color: #00bfff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 30%;
+}
+
+#submit-button:hover {
+    background-color: #0099cc;
+}
+.button-group button {
+    padding: 15px 30px;
+    color: #fff;
+    background: #0f709b;
+    border: solid 1px #0f709b;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.button-group {
+    display: flex;
+    gap: 15px;
+}
+button#create-a-client-btn,button#edit-client-btn, button#submit-documents-btn {
+    color: #fff;
+    font-weight: 600;
+    background: #133e67;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 30%;
+}
+nav.sidebar-nav {
+    width: 100%;
+}
+.client-list-container {
+    width: 100%;
+    /* margin: 0 auto; */
+    padding: 20px 0px;
+    box-sizing: border-box;
+}
+
+.client-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.client-list-table th, .client-list-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.client-list-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.client-list-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.client-list-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.client-list-table td {
+    font-size: 14px;
+}
+
+.client-list-table th {
+    font-size: 16px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.pagination a, .pagination span {
+    margin: 0 5px;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #0073aa;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.pagination a:hover, .pagination .current {
+    background-color: #0073aa;
+    color: white;
+}
+
+.pagination .current {
+    font-weight: bold;
+}
+.content-view-section {
+    width: 100%;
+}
+table.client-list-table #edit-btn {
+    background: #34495e;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px;
+    border-radius: 5px;
+}
+.align-self-end {
+    align-self: flex-end;
+}
+.mt-24 {
+    margin-top: 24px;
+}
+.documentRow input,
+.documentRow select {
+    padding: 5px;
+    flex: 1;
+}
+ 
+.uploadBtn,
+.removeBtn,
+#addMoreBtn {
+    background-color: #0073aa;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+ 
+.uploadBtn {
+    margin-right: 5px;
+}
+
+.doc-row-removeBtn {
+    background-color: #d9534f;
+    cursor: pointer;
+}
+div#documentContainer .group {
+    display: grid;
+}
+div#documentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.formdata {
+    display: grid;
+    margin-top: 20px;
+}
