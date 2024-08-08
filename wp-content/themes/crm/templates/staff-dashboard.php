@@ -87,7 +87,7 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                                         <div class="repeater-container">
                                             <div class="repeater-item">
                                                 <input  class="form-control" type="text" class="entity-name" name="entities[0][name]" placeholder="Name of Associated Entity(ies)">
-                                                <select  class="form-control" class="entity-type" name="entities[0][type]">
+                                                <select  class="form-control" name="entities[0][type]">
                                                     <option value="" disabled selected>Choose Legal Form</option>
                                                     <?php 
                                                     if(have_rows('type_of_entity', 'option')){
@@ -122,9 +122,9 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                 }else if($view == 'edit-client-page'){
                     $client_id = (isset($_GET['id'])) ? $_GET['id'] : '';
                     ?>
-                <div class="content-view-section">
-                    <div class="heading"><h3>Edit Client</h3></div>
-                    <div class="formdata">
+                <div class="card">
+                    <div class="card-header"><h3>Edit Client</h3></div>
+                    <div class="card-body">
                         <?php 
                         if(!empty($client_id)){
                             $userdata               =    get_userdata($client_id);
@@ -137,62 +137,87 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                             ?>
                             <form class="dashform" method="POST" id="edit-client">
                                 <input type="hidden" name="client_id" value="<?= $user_id ?>">
-                                <div class="form-group">
-                                    <label for="user_code">Client Code <span style="color: red;">*</span></label>
-                                    <input class="form-control" type="text" value="<?= $user_code ?>" name="user_code" id="user_code" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="anc_firstname">First Name of UBO/Controller <span style="color: red;">*</span></label>
-                                    <input class="form-control" type="text" value="<?= $anc_firstname ?>" name="anc_firstname" id="anc_firstname">
-                                </div>
-                                <div class="form-group">
-                                    <label for="anc_lastname">Last Name of UBO/Controller <span style="color: red;">*</span></label>
-                                    <input class="form-control" type="text" value="<?= $anc_lastname ?>" name="anc_lastname" id="anc_lastname">
-                                </div>
-                                <div class="form-group">
-                                    <label for="anc_countryresidence">Country of Residence</label>
-                                    <select class="form-control" name="anc_countryresidence" id="anc_countryresidence">
-                                        <option value="">Select Country of Residence</option>
-                                        <?php 
-                                        if(isset($countries) && !empty($countries)){
-                                            foreach($countries as $k => $v){
-                                                ?>
-                                                <option value="<?= $k.'-'.$v ?>" <?php if($anc_countryresidence == $k.'-'.$v) echo 'selected'; ?>><?= $v ?></option>
-                                                <?php
+                                <div class="form-row">
+                                    <div class="form-group w-50">
+                                        <label for="user_code">Client Code <span style="color: red;">*</span></label>
+                                        <input class="form-control" type="text" value="<?= $user_code ?>" name="user_code" id="user_code" readonly>
+                                    </div>
+                                    <div class="form-group w-50">
+                                        <label for="anc_firstname">First Name of UBO/Controller <span style="color: red;">*</span></label>
+                                        <input class="form-control" type="text" value="<?= $anc_firstname ?>" name="anc_firstname" id="anc_firstname">
+                                    </div>
+                                    <div class="form-group w-50">
+                                        <label for="anc_lastname">Last Name of UBO/Controller <span style="color: red;">*</span></label>
+                                        <input class="form-control" type="text" value="<?= $anc_lastname ?>" name="anc_lastname" id="anc_lastname">
+                                    </div>
+                                    <div class="form-group w-50">
+                                        <label for="anc_countryresidence">Country of Residence</label>
+                                        <select class="form-control" name="anc_countryresidence" id="anc_countryresidence">
+                                            <option value="">Select Country of Residence</option>
+                                            <?php 
+                                            if(isset($countries) && !empty($countries)){
+                                                foreach($countries as $k => $v){
+                                                    ?>
+                                                    <option value="<?= $k.'-'.$v ?>" <?php if($anc_countryresidence == $k.'-'.$v) echo 'selected'; ?>><?= $v ?></option>
+                                                    <?php
+                                                }
                                             }
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Associated Entity(ies)</label>
-                                    <div class="repeater-container">
-                                        <?php 
-                                        if(!empty($entities) && is_array($entities)){
-                                            foreach($entities as $key => $value){
-                                                $name = (isset($value['name'])) ? $value['name'] : '';
-                                                $type = (isset($value['type'])) ? $value['type'] : '';
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group w-100">
+                                        <label>Associated Entity(ies)</label>
+                                        <div class="repeater-container">
+                                            <?php 
+                                            if(!empty($entities) && is_array($entities)){
+                                                foreach($entities as $key => $value){
+                                                    $name = (isset($value['name'])) ? $value['name'] : '';
+                                                    $type = (isset($value['type'])) ? $value['type'] : '';
+                                                    ?>
+                                                    <div class="repeater-item">
+                                                        <?php 
+                                                        if(!empty($name)){
+                                                            ?>
+                                                            <input class="form-control" type="text" class="entity-name" value="<?= $name ?>" name="entities[<?= $key ?>][name]" placeholder="Name of Associated Entity(ies)" readonly>
+                                                            <?php
+                                                        }else{
+                                                            ?>
+                                                            <input class="form-control" type="text" class="entity-name" name="entities[<?= $key ?>][name]" placeholder="Name of Associated Entity(ies)">
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                        <select class="form-control" name="entities[<?= $key ?>][type]">
+                                                            <option value="" disabled selected>Choose Legal Form</option>
+                                                            <?php 
+                                                            if(have_rows('type_of_entity', 'option')){
+                                                                while(have_rows('type_of_entity', 'option')) : the_row();
+                                                                    $entity_name = get_sub_field('entity_name');
+                                                                    ?>
+                                                                    <option value="<?= $entity_name ?>" <?php if($type == $entity_name) echo 'selected'; ?>><?= $entity_name ?></option>
+                                                                    <?php
+                                                                endwhile;
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                        <button type="button" class="remove-button">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1ZM20 4h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path><path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0ZM15 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path></g>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <?php   
+                                                }
+                                            }else{
                                                 ?>
                                                 <div class="repeater-item">
-                                                    <?php 
-                                                    if(!empty($name)){
-                                                        ?>
-                                                        <input class="form-control" type="text" class="entity-name" value="<?= $name ?>" name="entities[<?= $key ?>][name]" placeholder="Name of Associated Entity(ies)" readonly>
-                                                        <?php
-                                                    }else{
-                                                        ?>
-                                                        <input class="form-control" type="text" class="entity-name" name="entities[<?= $key ?>][name]" placeholder="Name of Associated Entity(ies)">
-                                                        <?php
-                                                    }
-                                                    ?>
-                                                    <select class="entity-type form-control" name="entities[<?= $key ?>][type]">
+                                                    <input class="form-control" type="text" class="entity-name" name="entities[0][name]" placeholder="Name of Associated Entity(ies)">
+                                                    <select class="form-control" name="entities[0][type]">
                                                         <option value="" disabled selected>Choose Legal Form</option>
                                                         <?php 
                                                         if(have_rows('type_of_entity', 'option')){
                                                             while(have_rows('type_of_entity', 'option')) : the_row();
                                                                 $entity_name = get_sub_field('entity_name');
                                                                 ?>
-                                                                <option value="<?= $entity_name ?>" <?php if($type == $entity_name) echo 'selected'; ?>><?= $entity_name ?></option>
+                                                                <option value="<?= $entity_name ?>"><?= $entity_name ?></option>
                                                                 <?php
                                                             endwhile;
                                                         }
@@ -200,44 +225,21 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                                                     </select>
                                                     <button type="button" class="remove-button">
                                                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1ZM20 4h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path><path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0ZM15 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path></g>
-                                                        </svg>
                                                     </button>
                                                 </div>
-                                                <?php   
+                                                <?php
                                             }
-                                        }else{
                                             ?>
-                                            <div class="repeater-item">
-                                                <input class="form-control" type="text" class="entity-name" name="entities[0][name]" placeholder="Name of Associated Entity(ies)">
-                                                <select class="form-control" class="entity-type" name="entities[0][type]">
-                                                    <option value="" disabled selected>Choose Legal Form</option>
-                                                    <?php 
-                                                    if(have_rows('type_of_entity', 'option')){
-                                                        while(have_rows('type_of_entity', 'option')) : the_row();
-                                                            $entity_name = get_sub_field('entity_name');
-                                                            ?>
-                                                            <option value="<?= $entity_name ?>"><?= $entity_name ?></option>
-                                                            <?php
-                                                        endwhile;
-                                                    }
-                                                    ?>
-                                                </select>
-                                                <button type="button" class="remove-button">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1ZM20 4h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path><path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0ZM15 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path></g>
-                                                </button>
-                                            </div>
-                                            <?php
-                                        }
-                                        ?>
+                                        </div>
                                     </div>
-                                    <button type="button" id="add-button">Add</button>
-                                </div>
-                                <div class="form-group">
-                                    <div class="error" id="l-error" style="color:red; display:none;"></div>
-                                    <div class="success" id="l-success" style="color:green; display:none;"></div>
-                                </div>
-                                <div class="form-group" id="subtmit-section">
-                                    <button id="edit-client-btn" class="form-btn">Save & Close</button>
+                                    <div class="form-group w-100" id="subtmit-section">
+                                        <div class="button-group">
+                                            <button type="button" id="add-button">Add</button>
+                                            <button id="edit-client-btn" class="form-btn">Save & Close</button>
+                                        </div>
+                                        <div class="error" id="l-error" style="color:red; display:none;"></div>
+                                        <div class="success" id="l-success" style="color:green; display:none;"></div>
+                                    </div>
                                 </div>
                             </form>
                             <?php
@@ -252,9 +254,9 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                 <?php
                 }else if($view == 'edit-client'){
                     ?>
-                    <div class="content-view-section">
-                        <div class="heading"><h3>Edit Client</h3></div>
-                        <div class="formdata">
+                    <div class="card">
+                        <div class="card-header"><h3>Edit Client</h3></div>
+                        <div class="card-body">
                             <div class="client-list-container">
                                 <?php 
                                 $paged          = (get_query_var('paged')) ? get_query_var('paged') : 1;

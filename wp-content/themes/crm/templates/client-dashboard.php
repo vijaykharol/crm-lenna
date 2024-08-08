@@ -27,7 +27,8 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
             <ul>
                 <li class="list <?php if($view == 'dashboard') echo 'active'; ?>"><a href="?view=dashboard">Dashboard</a></li>
                 <li class="list <?php if($view == 'myaccount') echo 'active'; ?>"><a href="?view=myaccount">My Account</a></li>
-                <li class="list <?php if($view == 'documents') echo 'active'; ?>"><a href="?view=documents">Documents</a></li>
+                <!-- <li class="list <?php if($view == 'documents') echo 'active'; ?>"><a href="?view=documents">Documents</a></li> -->
+                <li class="list <?php if($view == 'entities') echo 'active'; ?>"><a href="?view=entities">Entities</a></li>
                 <li><a href="<?= wp_logout_url() ?>">Logout</a></li>
             </ul>
         </nav>
@@ -40,14 +41,119 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
             <?php
             if($view == 'myaccount'){
                 ?>
-                <div class="content-view-section">
-                    <div class="heading"><h3>My Account</h3></div>
-                    <div class="formdata">
-                        <?php echo do_shortcode('[forminator_form id="30"]'); ?>
+                <div class="card">
+                    <div class="card-header"><h3>My Account</h3></div>
+                    <div class="card-body">
+                        <h4 class="card_subhead">Uploaded Documents</h4>
+                        <div class="client-list-container">
+                            <?php 
+                            $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+                            $args = [
+                                'post_type'         =>  'client_document',
+                                'post_status'       =>  'publish',
+                                'meta_query'        =>  [
+                                    [
+                                        'key'       =>  'document_client_id', 
+                                        'value'     =>  $user_id,
+                                        'compare'   =>  '='
+                                    ]
+                                ],
+                                'posts_per_page'    =>  10, 
+                                'paged'             =>  $paged
+                            ];
+                            $docQuery = new WP_Query($args);
+                            ?>
+                            <table class="client-list-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Client Code</th>
+                                        <th>Category</th>
+                                        <th>Document Type</th>
+                                        <th>Date of Document</th>
+                                        <th>Documents</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                    if($docQuery->have_posts()){
+                                        $counter = 1;
+                                        while($docQuery->have_posts()){
+                                            $docQuery->the_post();
+                                            $postid         =   get_the_ID();
+                                            $client_code    =   get_post_meta($postid, 'document_client_code', true);
+                                            $document_files =   get_post_meta($postid, 'document_files', true);
+                                            //Category
+                                            $docCategory    =   wp_get_post_terms($postid, 'document-category');
+                                            $docategories   =   [];
+                                            if(!empty($docCategory)){
+                                                foreach($docCategory as $dc){
+                                                    $docategories[] = $dc->name;
+                                                }
+                                            }
+                                            //Type
+                                            $docType    =   wp_get_post_terms($postid, 'document-type');
+                                            $docTypes   =   [];
+                                            if(!empty($docType)){
+                                                foreach($docType as $dt){
+                                                    $docTypes[] = $dt->name;
+                                                }
+                                            }
+                                            $publish_date = get_the_date('Y-m-d');
+                                            ?>
+                                            <tr>
+                                                <td><?= $counter ?></td>
+                                                <td><?= $client_code ?></td>
+                                                <td><?= implode(',', $docategories) ?></td>
+                                                <td><?= implode(',', $docTypes) ?></td>
+                                                <td><?= $publish_date ?></td>
+                                                <td>
+                                                    <?php 
+                                                    if(!empty($document_files) && is_array($document_files)){
+                                                        ?>
+                                                        <div class="files"  style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                                            <?php
+                                                            foreach($document_files as $file_url){
+                                                                ?>
+                                                                <span class="file"><a href="<?= $file_url ?>" target="_blank"><i class="fa-solid fa-file"></i></a></span>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                            $counter++;
+                                        }
+                                        wp_reset_postdata();
+                                    }else{
+                                        echo 'No client documents found with the specified meta value.';
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                            <div class="pagination">
+                                <?php 
+                                // Pagination
+                                $big = 999999999; 
+                                echo paginate_links(array(
+                                    'base'      => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+                                    'format'    => '?paged=%#%',
+                                    'current'   => max(1, get_query_var('paged')),
+                                    'total'     => $docQuery->max_num_pages
+                                ));
+                                ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <?php
-            }if($view == 'documents'){
+            }
+            /*
+            if($view == 'documents'){
                 ?>
                 <div class="content-view-section">
                     <div class="heading"><h3>Uploaded documents</h3></div>
@@ -158,119 +264,24 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                     </div>
                 </div>
                 <?php
-            }else if($view == 'dashboard'){
+            }
+            */
+            else if($view == 'dashboard'){
                 ?>
-                <div class="content-view-section">
-                    <div class="heading"><h3>Dashboard</h3></div>
-                    <div class="dashboard-entries">
+                <div class="card">
+                    <div class="card-header"><h3>Dashboard</h3></div>
+                    <div class="card-body">
+                        <?php echo do_shortcode('[forminator_form id="30"]'); ?>
+                    </div>
+                </div>
+                <?php
+            }else if($view == 'entities'){
+                ?>
+                <div class="card">
+                    <div class="card-header"><h3>Entities</h3></div>
+                    <div class="card-body">
                         <div class="formdata">
-                            <h4>Uploaded documents</h4>
-                            <div class="client-list-container">
-                                <?php 
-                                $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-                                $args = [
-                                    'post_type'         =>  'client_document',
-                                    'post_status'       =>  'publish',
-                                    'meta_query'        =>  [
-                                        [
-                                            'key'       =>  'document_client_id', 
-                                            'value'     =>  $user_id,
-                                            'compare'   =>  '='
-                                        ]
-                                    ],
-                                    'posts_per_page'    =>  10, 
-                                    'paged'             =>  $paged
-                                ];
-                                $docQuery = new WP_Query($args);
-                                ?>
-                                <table class="client-list-table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Client Code</th>
-                                            <th>Category</th>
-                                            <th>Document Type</th>
-                                            <th>Date of Document</th>
-                                            <th>Documents</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php 
-                                        if($docQuery->have_posts()){
-                                            $counter = 1;
-                                            while($docQuery->have_posts()){
-                                                $docQuery->the_post();
-                                                $postid         =   get_the_ID();
-                                                $client_code    =   get_post_meta($postid, 'document_client_code', true);
-                                                $document_files =   get_post_meta($postid, 'document_files', true);
-                                                //Category
-                                                $docCategory    =   wp_get_post_terms($postid, 'document-category');
-                                                $docategories   =   [];
-                                                if(!empty($docCategory)){
-                                                    foreach($docCategory as $dc){
-                                                        $docategories[] = $dc->name;
-                                                    }
-                                                }
-                                                //Type
-                                                $docType    =   wp_get_post_terms($postid, 'document-type');
-                                                $docTypes   =   [];
-                                                if(!empty($docType)){
-                                                    foreach($docType as $dt){
-                                                        $docTypes[] = $dt->name;
-                                                    }
-                                                }
-                                                $publish_date = get_the_date('Y-m-d');
-                                                ?>
-                                                <tr>
-                                                    <td><?= $counter ?></td>
-                                                    <td><?= $client_code ?></td>
-                                                    <td><?= implode(',', $docategories) ?></td>
-                                                    <td><?= implode(',', $docTypes) ?></td>
-                                                    <td><?= $publish_date ?></td>
-                                                    <td>
-                                                        <?php 
-                                                        if(!empty($document_files) && is_array($document_files)){
-                                                            ?>
-                                                            <div class="files"  style="display: flex; flex-wrap: wrap; gap: 10px;">
-                                                                <?php
-                                                                foreach($document_files as $file_url){
-                                                                    ?>
-                                                                    <span class="file"><a href="<?= $file_url ?>" target="_blank"><i class="fa-solid fa-file"></i></a></span>
-                                                                    <?php
-                                                                }
-                                                                ?>
-                                                            </div>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                    </td>
-                                                </tr>
-                                                <?php
-                                                $counter++;
-                                            }
-                                            wp_reset_postdata();
-                                        }else{
-                                            echo 'No client documents found with the specified meta value.';
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
-                                <div class="pagination">
-                                    <?php 
-                                    // Pagination
-                                    $big = 999999999; 
-                                    echo paginate_links(array(
-                                        'base'      => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
-                                        'format'    => '?paged=%#%',
-                                        'current'   => max(1, get_query_var('paged')),
-                                        'total'     => $docQuery->max_num_pages
-                                    ));
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="formdata">
-                            <h4>Submitted Entities</h4>
+                            <h4 class="card_subhead">New Service Request</h4>
                             <div class="client-list-container">
                                 <?php
                                 $form_id = 30;
@@ -318,18 +329,6 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                                         ?>
                                     </tbody>
                                 </table>
-                                <div class="pagination">
-                                    <?php 
-                                    // Pagination
-                                    $big = 999999999; 
-                                    echo paginate_links(array(
-                                        'base'      => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
-                                        'format'    => '?paged=%#%',
-                                        'current'   => max(1, get_query_var('paged')),
-                                        'total'     => $docQuery->max_num_pages
-                                    ));
-                                    ?>
-                                </div>
                             </div>
                         </div>
                     </div>
