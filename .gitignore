@@ -1,2 +1,5 @@
 # Ignore WordPress config file
 wp-config.php
+
+# Ignore htaccess file
+.htaccess
