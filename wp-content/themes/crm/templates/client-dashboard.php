@@ -25,10 +25,10 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li class="list <?php if($view == 'dashboard') echo 'active'; ?>"><a href="?view=dashboard">Dashboard</a></li>
-                <li class="list <?php if($view == 'myaccount') echo 'active'; ?>"><a href="?view=myaccount">My Account</a></li>
-                <!-- <li class="list <?php if($view == 'documents') echo 'active'; ?>"><a href="?view=documents">Documents</a></li> -->
-                <li class="list <?php if($view == 'entities') echo 'active'; ?>"><a href="?view=entities">Entities</a></li>
+                <li class="list <?php if($view == 'dashboard') echo 'active'; ?>"><a href="?view=dashboard">New Entities Formation</a></li>
+                <!-- <li class="list <?php if($view == 'myaccount') echo 'active'; ?>"><a href="?view=myaccount">My Account</a></li> -->
+                <li class="list <?php if($view == 'documents') echo 'active'; ?>"><a href="?view=documents">Documents/Billing</a></li>
+                <li class="list <?php if($view == 'entities') echo 'active'; ?>"><a href="?view=entities">Existing Entities</a></li>
                 <li><a href="<?= wp_logout_url() ?>">Logout</a></li>
             </ul>
         </nav>
@@ -151,13 +151,11 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                     </div>
                 </div>
                 <?php
-            }
-            /*
-            if($view == 'documents'){
+            }if($view == 'documents'){
                 ?>
-                <div class="content-view-section">
-                    <div class="heading"><h3>Uploaded documents</h3></div>
-                    <div class="formdata">
+                <div class="card">
+                    <div class="card-header"><h3>Uploaded Documents</h3></div>
+                    <div class="card-body">
                         <div class="client-list-container">
                             <?php 
                             $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
@@ -264,13 +262,12 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                     </div>
                 </div>
                 <?php
-            }
-            */
-            else if($view == 'dashboard'){
+            }else if($view == 'dashboard'){
                 ?>
                 <div class="card">
-                    <div class="card-header"><h3>Dashboard</h3></div>
+                    <div class="card-header"><h3>New Entities Formation & Licensing</h3></div>
                     <div class="card-body">
+                        <h4 class="card_subhead">Setup a New Entity</h4>
                         <?php echo do_shortcode('[forminator_form id="30"]'); ?>
                     </div>
                 </div>
@@ -278,10 +275,10 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
             }else if($view == 'entities'){
                 ?>
                 <div class="card">
-                    <div class="card-header"><h3>Entities</h3></div>
+                    <div class="card-header"><h3>Existing Entities</h3></div>
                     <div class="card-body">
                         <div class="formdata">
-                            <h4 class="card_subhead">New Service Request</h4>
+                            <h4 class="card_subhead">Your Entities</h4>
                             <div class="client-list-container">
                                 <?php
                                 $form_id = 30;
