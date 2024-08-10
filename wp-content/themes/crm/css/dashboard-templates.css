@@ -399,3 +399,20 @@ div#documentContainer {
     flex-wrap: wrap;
     gap: 20px;
 }
+.head-multi-card {
+    background: #005377;
+    color: #fff;
+    padding: 10px 15px;
+    margin-bottom: 18px;
+}
+.multi-card {
+    padding: 15px;
+    border: 2px solid #addbef;
+}
+.multi-card .card_subhead {
+    font-size: 22px;
+    color: #2991d0;
+}
+.multi-card:not(:last-child) {
+    margin-bottom: 25px;
+}
