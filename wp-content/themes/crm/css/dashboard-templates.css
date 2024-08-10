@@ -276,10 +276,10 @@ nav.sidebar-nav {
 
 .client-list-table th {
     font-size: 16px;
-    padding: 15px;
+    padding: 10px 15px;
     color: #fff;
-    background-color: #005377;
-    font-weight: bold;
+    background-color: #2991d0;
+    font-weight: 500;
 }
 .pagination {
     display: flex;
