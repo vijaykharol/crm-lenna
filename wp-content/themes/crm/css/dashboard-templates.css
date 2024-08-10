@@ -416,3 +416,7 @@ div#documentContainer {
 .multi-card:not(:last-child) {
     margin-bottom: 25px;
 }
+#view-section .card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
