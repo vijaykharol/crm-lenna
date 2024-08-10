@@ -394,3 +394,8 @@ div#documentContainer {
     display: grid;
     margin-top: 20px;
 }
+.card-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
