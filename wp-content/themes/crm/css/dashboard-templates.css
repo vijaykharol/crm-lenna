@@ -337,7 +337,7 @@ h4.card_subhead {
     color: #FFFFFF;
     padding: 10px 25px;
 }
-table.client-list-table .files span.file a {
+/* table.client-list-table .files span.file a {
     padding: 0;
     background: #005377;
     width: 24px;
@@ -348,6 +348,10 @@ table.client-list-table .files span.file a {
     justify-content: center;
     color: #fff;
     border-radius: 4px;
+} */
+ table.client-list-table .files span.file a {
+    color: #000;
+    text-decoration: none;
 }
 .align-self-end {
     align-self: flex-end;
@@ -419,4 +423,7 @@ div#documentContainer {
 #view-section .card-body {
     display: grid;
     grid-template-columns: 1fr 1fr;
+}
+section#view-section tr.due td {
+    color: #B60000;
 }

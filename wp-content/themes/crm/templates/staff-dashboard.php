@@ -302,6 +302,10 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                                             <input class="form-control" type="date" name="client_document[0][document_date]" placeholder="Date of Document" required>
                                         </div>
                                         <div class="form-group w-33">
+                                            <label for="">Entity Name</label>
+                                            <input class="form-control" type="text" name="client_document[0][entity_name]" placeholder="Entity" required>
+                                        </div>
+                                        <div class="form-group w-33">
                                             <label for="">Category</label>
                                             <select class="form-control" name="client_document[0][doc_category]" class="doc-categories" required>
                                                 <option value="">Choose Category</option>
@@ -407,6 +411,10 @@ get_footer();
                 <div class="form-group w-33">
                     <label for="">Date of Document</label>
                     <input class="form-control"  type="date" name="client_document[${index}][document_date]" placeholder="Date of Document" required>
+                </div>
+                <div class="form-group w-33">
+                    <label for="">Entity Name</label>
+                    <input class="form-control" type="text" name="client_document[${index}][entity_name]" placeholder="Entity" required>
                 </div>
                 <div class="form-group w-33">
                     <label for="">Category</label>

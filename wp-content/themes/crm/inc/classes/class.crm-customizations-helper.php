@@ -14,6 +14,9 @@ if(!class_exists('CRMCustmizationsHelper', false)){
             add_action( 'wp_ajax_upload-client-documents', [__CLASS__, 'upload_client_documents_cb'] );
             add_action( 'wp_ajax_nopriv_upload-client-documents', [__CLASS__, 'upload_client_documents_cb'] );
             add_action( 'after_setup_theme', [__CLASS__, 'hide_admin_bar_for_non_admins'] );
+            
+            //Forminator Form Save
+            add_action('forminator_custom_form_mail_before_send_mail', [__CLASS__, 'my_custom_function_for_CForm'], 10, 4);
         }
         public static function create_client_documents_post_type(){
             $labels = array(
@@ -98,6 +101,8 @@ if(!class_exists('CRMCustmizationsHelper', false)){
                         'meta_input'                =>  array(
                             'document_client_id'    =>  $client_id,
                             'document_client_code'  =>  $client_code,
+                            'document_ref_no'       =>  self::generate_random_reference_number(),
+                            'document_entity_name'  =>  $document['entity_name'],
                         )
                     ));
         
@@ -154,6 +159,26 @@ if(!class_exists('CRMCustmizationsHelper', false)){
             if(!is_admin()){
                 show_admin_bar(false);
             }
+        }
+
+        public static function my_custom_function_for_CForm($formid, $custom_form, $data, $entry){
+            $entry_id = (isset($entry->entry_id)) ? $entry->entry_id : '';
+            $formid   = (isset($entry->form_id)) ? $entry->form_id : '';
+            if(!empty($formid) && !empty($entry_id) && $formid == 30){
+                $invoice_number = 'C'.$entry_id.rand(100000, 999999);
+                $entry_meta[] = array(
+                    'name'  =>  'entry_invoice_number',
+                    'value' =>  $invoice_number
+                );
+                Forminator_API::update_entry_meta($formid, $entry_id, $entry_meta);
+            }
+        }
+
+        public static function generate_random_reference_number($prefix = 'TABC', $length = 3){
+            $random_number      =   rand(1, 999);
+            $padded_number      =   str_pad($random_number, $length, '0', STR_PAD_LEFT);
+            $reference_number   =   $prefix.'-'.$padded_number;
+            return $reference_number;
         }
     }
     CRMCustmizationsHelper::init();
