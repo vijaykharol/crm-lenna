@@ -277,4 +277,87 @@ jQuery(document).ready(function(){
             }
         });
     });
+
+    //Set Pay by date
+    jQuery(document).on('click', 'button#set-entry-pay-by-date', function(e){
+        e.preventDefault();
+        jQuery('button#set-entry-pay-by-date').html('Please wait...');
+        jQuery('button#set-entry-pay-by-date').prop('disabled', true);
+        var formdataa = new FormData(jQuery('form#pay-by-date-form')[0]);
+        formdataa.append('action', 'set-pay-by-date');
+        jQuery.ajax({
+            url             :   ajax_object.ajax_url,
+            type            :   'POST',
+            data            :   formdataa,
+            processData     :   false, 
+            contentType     :   false,
+            success: function(response){
+                let res         =   JSON.parse(response);
+                let status      =   res.status;
+                let message     =   res.message;
+                if(status){
+                    //hide/empty error
+                    jQuery('#l-error').html('');
+                    jQuery('#l-error').hide();
+
+                    //show success
+                    jQuery('#l-success').html('');
+                    jQuery('#l-success').html(message);
+                    jQuery('#l-success').show();
+                    if(res.url){
+                        setTimeout(() => {
+                            window.location.href = res.url;
+                        }, 2000);
+                    }
+                }else{
+                    //hide/empty error
+                    jQuery('#l-success').html('');
+                    jQuery('#l-success').hide();
+
+                    //show success
+                    jQuery('#l-error').html('');
+                    jQuery('#l-error').html(message);
+                    jQuery('#l-error').show();
+
+                }
+                jQuery('button#set-entry-pay-by-date').html('Save');
+            }
+        });
+    });
 });
+
+//Entry Status..
+function setEntryStatus(entryId, checkbox){
+    // Check if the checkbox is checked
+    var status = checkbox.checked ? 'checked' : 'unchecked';
+    if(entryId != ''){
+        if(confirm('Are you sure you want to make this change?')){
+            jQuery.ajax({
+                url     : ajax_object.ajax_url,
+                method  : 'POST',
+                data    : {
+                    action      : 'update_entry_status',
+                    entry_id    : entryId,
+                    status      : status
+                },
+                success : function(response){
+                    const res = JSON.parse(response);
+                    if(res.status){
+                        jQuery('.status-update').html('');
+                        jQuery('.status-update').html(res.msg);
+                        jQuery('.status-update').show();
+                        setTimeout(() => {
+                            jQuery('.status-update').html('');
+                            jQuery('.status-update').hide();
+                        }, 1500);
+                    }
+                },
+                error : function(xhr, status, error){
+                    console.error('AJAX UPDATE ENTRY STATUS ERROR: ', status, error);
+                }
+            });
+        }
+    }else{
+        alert('Oops, something went wrong, please refresh the page and try again. Thank you!');
+    }
+}

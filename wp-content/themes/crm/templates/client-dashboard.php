@@ -177,12 +177,21 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'myacc
                                                     $costindications        =   $entryData->meta_data['calculation-1']['value']['result'];
                                                     $selectedCheckboxes     =   $entryData->meta_data['checkbox-1']['value'];
                                                     $invoicenumber          =   $entryData->meta_data['entry_invoice_number']['value'];
-                                                    $class                  =   'due';
+                                                    $entry_status           =   (isset($entryData->meta_data['entry_status']['value'])) ? $entryData->meta_data['entry_status']['value'] : 0;
+                                                    $entry_pay_by_date      =   (isset($entry->meta_data['entry_pay_by_date']['value']) && !empty($entry->meta_data['entry_pay_by_date']['value'])) ? date('d/m/Y', strtotime($entry->meta_data['entry_pay_by_date']['value'])) : '';
+                                                    $current_date           =   date('d/m/Y');
+                                                    if(empty($entry_status) && $entry_status == 0){
+                                                        $class          =    'due';
+                                                        $status_text    =    'Due';
+                                                    }else if($entry_status == 1){
+                                                        $class              =   'paid';
+                                                        $status_text        =   'Paid';
+                                                    }
                                                     ?>
                                                     <tr class="<?= $class ?>">
                                                         <td><?= $invoicenumber ?></td>
                                                         <td><?= 'USD'.number_format($costindications) ?></td>
-                                                        <td>Due</td>
+                                                        <td><?= $status_text ?></td>
                                                     </tr>
                                                     <?php
                                                     $counter++;

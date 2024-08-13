@@ -31,6 +31,7 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                     ?>
                     <li class="list <?php if($view == 'add-new-client') echo 'active'; ?>"><a href="?view=add-new-client">Add New Client</a></li>
                     <li class="list <?php if($view == 'edit-client' || $view == 'edit-client-page') echo 'active'; ?>"><a href="?view=edit-client">Edit Client</a></li>
+                    <li class="list <?php if($view == 'billing' || $view == 'billing') echo 'active'; ?>"><a href="?view=billing">Billing</a></li>
                     <?php
                 }
                 ?>
@@ -122,78 +123,102 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                 }else if($view == 'edit-client-page'){
                     $client_id = (isset($_GET['id'])) ? $_GET['id'] : '';
                     ?>
-                <div class="card">
-                    <div class="card-header"><h3>Edit Client</h3></div>
-                    <div class="card-body">
-                        <?php 
-                        if(!empty($client_id)){
-                            $userdata               =    get_userdata($client_id);
-                            $user_id                =    $userdata->ID;
-                            $user_code              =    get_user_meta($user_id, 'client_user_code', true);
-                            $anc_countryresidence   =    get_user_meta($user_id, 'country_of_residence', true);
-                            $entities               =    get_user_meta($user_id, 'user_entities', true);
-                            $anc_firstname          =    get_user_meta($user_id, 'first_name', true);
-                            $anc_lastname           =    get_user_meta($user_id, 'last_name', true);
-                            ?>
-                            <form class="dashform" method="POST" id="edit-client">
-                                <input type="hidden" name="client_id" value="<?= $user_id ?>">
-                                <div class="form-row">
-                                    <div class="form-group w-50">
-                                        <label for="user_code">Client Code <span style="color: red;">*</span></label>
-                                        <input class="form-control" type="text" value="<?= $user_code ?>" name="user_code" id="user_code" readonly>
-                                    </div>
-                                    <div class="form-group w-50">
-                                        <label for="anc_firstname">First Name of UBO/Controller <span style="color: red;">*</span></label>
-                                        <input class="form-control" type="text" value="<?= $anc_firstname ?>" name="anc_firstname" id="anc_firstname">
-                                    </div>
-                                    <div class="form-group w-50">
-                                        <label for="anc_lastname">Last Name of UBO/Controller <span style="color: red;">*</span></label>
-                                        <input class="form-control" type="text" value="<?= $anc_lastname ?>" name="anc_lastname" id="anc_lastname">
-                                    </div>
-                                    <div class="form-group w-50">
-                                        <label for="anc_countryresidence">Country of Residence</label>
-                                        <select class="form-control" name="anc_countryresidence" id="anc_countryresidence">
-                                            <option value="">Select Country of Residence</option>
-                                            <?php 
-                                            if(isset($countries) && !empty($countries)){
-                                                foreach($countries as $k => $v){
-                                                    ?>
-                                                    <option value="<?= $k.'-'.$v ?>" <?php if($anc_countryresidence == $k.'-'.$v) echo 'selected'; ?>><?= $v ?></option>
-                                                    <?php
+                    <div class="card">
+                        <div class="card-header"><h3>Edit Client</h3></div>
+                        <div class="card-body">
+                            <?php 
+                            if(!empty($client_id)){
+                                $userdata               =    get_userdata($client_id);
+                                $user_id                =    $userdata->ID;
+                                $user_code              =    get_user_meta($user_id, 'client_user_code', true);
+                                $anc_countryresidence   =    get_user_meta($user_id, 'country_of_residence', true);
+                                $entities               =    get_user_meta($user_id, 'user_entities', true);
+                                $anc_firstname          =    get_user_meta($user_id, 'first_name', true);
+                                $anc_lastname           =    get_user_meta($user_id, 'last_name', true);
+                                ?>
+                                <form class="dashform" method="POST" id="edit-client">
+                                    <input type="hidden" name="client_id" value="<?= $user_id ?>">
+                                    <div class="form-row">
+                                        <div class="form-group w-50">
+                                            <label for="user_code">Client Code <span style="color: red;">*</span></label>
+                                            <input class="form-control" type="text" value="<?= $user_code ?>" name="user_code" id="user_code" readonly>
+                                        </div>
+                                        <div class="form-group w-50">
+                                            <label for="anc_firstname">First Name of UBO/Controller <span style="color: red;">*</span></label>
+                                            <input class="form-control" type="text" value="<?= $anc_firstname ?>" name="anc_firstname" id="anc_firstname">
+                                        </div>
+                                        <div class="form-group w-50">
+                                            <label for="anc_lastname">Last Name of UBO/Controller <span style="color: red;">*</span></label>
+                                            <input class="form-control" type="text" value="<?= $anc_lastname ?>" name="anc_lastname" id="anc_lastname">
+                                        </div>
+                                        <div class="form-group w-50">
+                                            <label for="anc_countryresidence">Country of Residence</label>
+                                            <select class="form-control" name="anc_countryresidence" id="anc_countryresidence">
+                                                <option value="">Select Country of Residence</option>
+                                                <?php 
+                                                if(isset($countries) && !empty($countries)){
+                                                    foreach($countries as $k => $v){
+                                                        ?>
+                                                        <option value="<?= $k.'-'.$v ?>" <?php if($anc_countryresidence == $k.'-'.$v) echo 'selected'; ?>><?= $v ?></option>
+                                                        <?php
+                                                    }
                                                 }
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-group w-100">
-                                        <label>Associated Entity(ies)</label>
-                                        <div class="repeater-container">
-                                            <?php 
-                                            if(!empty($entities) && is_array($entities)){
-                                                foreach($entities as $key => $value){
-                                                    $name = (isset($value['name'])) ? $value['name'] : '';
-                                                    $type = (isset($value['type'])) ? $value['type'] : '';
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group w-100">
+                                            <label>Associated Entity(ies)</label>
+                                            <div class="repeater-container">
+                                                <?php 
+                                                if(!empty($entities) && is_array($entities)){
+                                                    foreach($entities as $key => $value){
+                                                        $name = (isset($value['name'])) ? $value['name'] : '';
+                                                        $type = (isset($value['type'])) ? $value['type'] : '';
+                                                        ?>
+                                                        <div class="repeater-item">
+                                                            <?php 
+                                                            if(!empty($name)){
+                                                                ?>
+                                                                <input class="form-control" type="text" class="entity-name" value="<?= $name ?>" name="entities[<?= $key ?>][name]" placeholder="Name of Associated Entity(ies)" readonly>
+                                                                <?php
+                                                            }else{
+                                                                ?>
+                                                                <input class="form-control" type="text" class="entity-name" name="entities[<?= $key ?>][name]" placeholder="Name of Associated Entity(ies)">
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                            <select class="form-control" name="entities[<?= $key ?>][type]">
+                                                                <option value="" disabled selected>Choose Legal Form</option>
+                                                                <?php 
+                                                                if(have_rows('type_of_entity', 'option')){
+                                                                    while(have_rows('type_of_entity', 'option')) : the_row();
+                                                                        $entity_name = get_sub_field('entity_name');
+                                                                        ?>
+                                                                        <option value="<?= $entity_name ?>" <?php if($type == $entity_name) echo 'selected'; ?>><?= $entity_name ?></option>
+                                                                        <?php
+                                                                    endwhile;
+                                                                }
+                                                                ?>
+                                                            </select>
+                                                            <button type="button" class="remove-button">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1ZM20 4h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path><path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0ZM15 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path></g>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <?php   
+                                                    }
+                                                }else{
                                                     ?>
                                                     <div class="repeater-item">
-                                                        <?php 
-                                                        if(!empty($name)){
-                                                            ?>
-                                                            <input class="form-control" type="text" class="entity-name" value="<?= $name ?>" name="entities[<?= $key ?>][name]" placeholder="Name of Associated Entity(ies)" readonly>
-                                                            <?php
-                                                        }else{
-                                                            ?>
-                                                            <input class="form-control" type="text" class="entity-name" name="entities[<?= $key ?>][name]" placeholder="Name of Associated Entity(ies)">
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                        <select class="form-control" name="entities[<?= $key ?>][type]">
+                                                        <input class="form-control" type="text" class="entity-name" name="entities[0][name]" placeholder="Name of Associated Entity(ies)">
+                                                        <select class="form-control" name="entities[0][type]">
                                                             <option value="" disabled selected>Choose Legal Form</option>
                                                             <?php 
                                                             if(have_rows('type_of_entity', 'option')){
                                                                 while(have_rows('type_of_entity', 'option')) : the_row();
                                                                     $entity_name = get_sub_field('entity_name');
                                                                     ?>
-                                                                    <option value="<?= $entity_name ?>" <?php if($type == $entity_name) echo 'selected'; ?>><?= $entity_name ?></option>
+                                                                    <option value="<?= $entity_name ?>"><?= $entity_name ?></option>
                                                                     <?php
                                                                 endwhile;
                                                             }
@@ -201,57 +226,33 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                                                         </select>
                                                         <button type="button" class="remove-button">
                                                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1ZM20 4h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path><path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0ZM15 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path></g>
-                                                            </svg>
                                                         </button>
                                                     </div>
-                                                    <?php   
+                                                    <?php
                                                 }
-                                            }else{
                                                 ?>
-                                                <div class="repeater-item">
-                                                    <input class="form-control" type="text" class="entity-name" name="entities[0][name]" placeholder="Name of Associated Entity(ies)">
-                                                    <select class="form-control" name="entities[0][type]">
-                                                        <option value="" disabled selected>Choose Legal Form</option>
-                                                        <?php 
-                                                        if(have_rows('type_of_entity', 'option')){
-                                                            while(have_rows('type_of_entity', 'option')) : the_row();
-                                                                $entity_name = get_sub_field('entity_name');
-                                                                ?>
-                                                                <option value="<?= $entity_name ?>"><?= $entity_name ?></option>
-                                                                <?php
-                                                            endwhile;
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                    <button type="button" class="remove-button">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1ZM20 4h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path><path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0ZM15 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" fill="#ffffff" opacity="1" data-original="#000000" class=""></path></g>
-                                                    </button>
-                                                </div>
-                                                <?php
-                                            }
-                                            ?>
+                                            </div>
+                                        </div>
+                                        <div class="form-group w-100" id="subtmit-section">
+                                            <div class="button-group">
+                                                <button type="button" id="add-button">Add</button>
+                                                <button id="edit-client-btn" class="form-btn">Save & Close</button>
+                                            </div>
+                                            <div class="error" id="l-error" style="color:red; display:none;"></div>
+                                            <div class="success" id="l-success" style="color:green; display:none;"></div>
                                         </div>
                                     </div>
-                                    <div class="form-group w-100" id="subtmit-section">
-                                        <div class="button-group">
-                                            <button type="button" id="add-button">Add</button>
-                                            <button id="edit-client-btn" class="form-btn">Save & Close</button>
-                                        </div>
-                                        <div class="error" id="l-error" style="color:red; display:none;"></div>
-                                        <div class="success" id="l-success" style="color:green; display:none;"></div>
-                                    </div>
-                                </div>
-                            </form>
-                            <?php
-                        }else{
+                                </form>
+                                <?php
+                            }else{
+                                ?>
+                                <p style="color:red;">Wrong client url please go back and try again. Thanks!</p>
+                                <?php
+                            }
                             ?>
-                            <p style="color:red;">Wrong client url please go back and try again. Thanks!</p>
-                            <?php
-                        }
-                        ?>
+                        </div>
                     </div>
-                </div>
-                <?php
+                    <?php
                 }else if($view == 'edit-client'){
                     ?>
                     <div class="card">
@@ -363,6 +364,115 @@ $view = (isset($_GET['view']) && !empty($_GET['view'])) ? $_GET['view'] : 'dashb
                                     <div class="success" id="l-success" style="color:green; display:none;"></div>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                    <?php
+                }else if($view == 'billing'){
+                    ?>
+                    <div class="card content-view-section">
+                        <div class="card-header"><h3>Billing Management:</h3></div>
+                        <div class="card-body">
+                            <div class="client-list-container">
+                                <?php
+                                $form_id = 30;
+                                $submitted_entities = Forminator_Form_Entry_Model::get_entries($form_id);
+                                ?>
+                                <div class="status-update"></div>
+                                    <table class="client-list-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Sr. No.</th>
+                                                <th>Invoice No.</th>
+                                                <th>Client Code</th>
+                                                <th>Amount - USD</th>
+                                                <th>Pay By Date</th>
+                                                <th>Paid</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php 
+                                            if(!empty($submitted_entities) && is_array($submitted_entities)){
+                                                $counter = 1;
+                                                foreach($submitted_entities as $entry){
+                                                    $entry_id               =   $entry->entry_id;
+                                                    $entry_invoice_number   =   (isset($entry->meta_data['entry_invoice_number']['value'])) ? $entry->meta_data['entry_invoice_number']['value'] : '';
+                                                    $entryUserid            =   (isset($entry->meta_data['hidden-1']['value'])) ? $entry->meta_data['hidden-1']['value'] : '';
+                                                    $entryAmount            =   (isset($entry->meta_data['calculation-1']['value']['result'])) ? $entry->meta_data['calculation-1']['value']['result'] : '';
+                                                    $datecreated            =   (!empty($entry->date_created)) ? date('d/m/Y', strtotime($entry->date_created)) : '';
+                                                    $client_code            =   (!empty($entryUserid)) ? get_user_meta($entryUserid, 'client_user_code', true) : '';
+                                                    $entry_status           =   (isset($entry->meta_data['entry_status']['value'])) ? $entry->meta_data['entry_status']['value'] : 0;
+                                                    $entry_pay_by_date      =   (isset($entry->meta_data['entry_pay_by_date']['value']) && !empty($entry->meta_data['entry_pay_by_date']['value'])) ? date('d/m/Y', strtotime($entry->meta_data['entry_pay_by_date']['value'])) : 'Not Available!';
+                                                    if(empty($entry_status) && $entry_status == 0){
+                                                        $checkboxstatus = '';
+                                                    }else if($entry_status == 1){
+                                                        $checkboxstatus = 'checked';
+                                                    }
+                                                    ?>
+                                                    <tr>
+                                                        <td><?= $counter ?></td>
+                                                        <td><?= $entry_invoice_number ?></td>
+                                                        <td><?= $client_code ?></td>
+                                                        <td><?= 'USD'.$entryAmount ?></td>
+                                                        <td><?= $entry_pay_by_date ?></td>
+                                                        <td>
+                                                            <input type="checkbox" name="entry-status" class="entry-status" onchange="setEntryStatus(<?= $entry_id ?>, this)" <?= $checkboxstatus ?>>
+                                                        </td>
+                                                        <td>
+                                                            <a href="?view=pay-by-date&entry_id=<?= $entry_id ?>" class="btn btn-payby-date">Set Pay By Date</a>
+                                                        </td>
+                                                    </tr>
+                                                    <?php
+                                                    $counter++;
+                                                }
+                                            }else{
+                                                ?>
+                                                <tr>
+                                                    <td colspan="6">Nothing found!</td>
+                                                </tr>
+                                                <?php
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }else if($view == 'pay-by-date'){
+                    $entry_id = (isset($_GET['entry_id'])) ? $_GET['entry_id'] : '';
+                    ?>
+                    <div class="card content-view-section">
+                        <div class="card-header"><h3>Billing Management:</h3></div>
+                        <div class="card-body">
+                            <?php 
+                            if(!empty($entry_id)){
+                                ?>
+                                <h4>Pay By Date(Date which invoice should be paid)</h4>
+                                <form class="dashform" method="POST" id="pay-by-date-form">
+                                    <div class="form-row">
+                                        <input type="hidden" id="form-entry-id" name="form_entry_id" value="<?= $entry_id ?>">
+                                        <div class="form-group w-33">
+                                            <label for="pay_by_date">Pay By Date <span style="color: red;">*</span></label>
+                                            <input class="form-control" type="date" name="pay_by_date" id="pay_by_date" required>
+                                        </div>
+                                        <div class="form-group w-100" id="subtmit-section">
+                                            <div class="button-group">
+                                                <button id="set-entry-pay-by-date" class="form-btn">Save</button>  
+                                            </div>                                      
+                                            <div class="error" id="l-error" style="color:red; display:none;"></div>
+                                            <div class="success" id="l-success" style="color:green; display:none;"></div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <?php
+                            }else{
+                                ?>
+                                <span class="incorrect-url">Incorrect Url!</span>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
                     <?php

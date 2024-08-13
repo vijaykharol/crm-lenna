@@ -427,3 +427,24 @@ div#documentContainer {
 section#view-section tr.due td {
     color: #B60000;
 }
+div.status-update {
+    color: #008000;
+    font-weight: 500;
+    background: #0000000d;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: none;
+}
+a.btn.btn-payby-date {
+    text-decoration: none;
+    color: #fff;
+    background: #005377;
+    padding: 10px;
+    border-radius: 5px;
+}
+form.dashform {
+    width: 100%;
+}
+span.incorrect-url {
+    color: #a30000;
+}

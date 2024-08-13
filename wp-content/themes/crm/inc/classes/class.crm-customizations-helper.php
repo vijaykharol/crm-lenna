@@ -17,6 +17,14 @@ if(!class_exists('CRMCustmizationsHelper', false)){
             
             //Forminator Form Save
             add_action('forminator_custom_form_mail_before_send_mail', [__CLASS__, 'my_custom_function_for_CForm'], 10, 4);
+
+            //Forminator Entry Status changing..
+            add_action( 'wp_ajax_update_entry_status', [__CLASS__, 'update_entry_status_cb'] );
+            add_action( 'wp_ajax_nopriv_update_entry_status', [__CLASS__, 'update_entry_status_cb'] );
+
+            //Set Pay by Date
+            add_action( 'wp_ajax_set-pay-by-date', [__CLASS__, 'set_pay_by_date_cb'] );
+            add_action( 'wp_ajax_nopriv_set-pay-by-date', [__CLASS__, 'set_pay_by_date_cb'] );
         }
         public static function create_client_documents_post_type(){
             $labels = array(
@@ -160,7 +168,6 @@ if(!class_exists('CRMCustmizationsHelper', false)){
                 show_admin_bar(false);
             }
         }
-
         public static function my_custom_function_for_CForm($formid, $custom_form, $data, $entry){
             $entry_id = (isset($entry->entry_id)) ? $entry->entry_id : '';
             $formid   = (isset($entry->form_id)) ? $entry->form_id : '';
@@ -170,15 +177,78 @@ if(!class_exists('CRMCustmizationsHelper', false)){
                     'name'  =>  'entry_invoice_number',
                     'value' =>  $invoice_number
                 );
+
+                $entry_meta[] = array(
+                    'name'  =>  'entry_status',
+                    'value' =>  0,
+                );
+
                 Forminator_API::update_entry_meta($formid, $entry_id, $entry_meta);
             }
         }
-
         public static function generate_random_reference_number($prefix = 'TABC', $length = 3){
             $random_number      =   rand(1, 999);
             $padded_number      =   str_pad($random_number, $length, '0', STR_PAD_LEFT);
             $reference_number   =   $prefix.'-'.$padded_number;
             return $reference_number;
+        }
+        //Forminator Entry Status Changing process Handler..
+        public static function update_entry_status_cb(){
+            $entry_id   =   (isset($_POST['entry_id'])) ? $_POST['entry_id']    : '';
+            $status     =   (isset($_POST['status'])) ? $_POST['status']        : '';
+            $return     =   [];
+            $formid     =   30;
+            if(empty($entry_id)){
+                $return['status'] = false;
+                $return['msg']    = 'Oops, something went wrong, please refresh the page and try again. Thank you!';
+            }else if(empty($status)){
+                $return['status'] = false;
+                $return['msg']    = 'Oops, something went wrong, please refresh the page and try again. Thank you!';
+            }else{
+                if($status == 'checked'){
+                    $entry_meta[] = array(
+                        'name'  =>  'entry_status',
+                        'value' =>  1,
+                    );
+                    Forminator_API::update_entry_meta($formid, $entry_id, $entry_meta);
+                }else{
+                    $entry_meta[] = array(
+                        'name'  =>  'entry_status',
+                        'value' =>  0,
+                    );
+                    Forminator_API::update_entry_meta($formid, $entry_id, $entry_meta);
+                }
+                $return['status']   = true;
+                $return['msg']      = 'Updated Successfully!';
+            }
+            echo json_encode($return);
+            exit;
+        }
+        //SET PAY BY DATE.
+        public static function set_pay_by_date_cb(){
+            $entry_id       =   (isset($_POST['form_entry_id'])) ? $_POST['form_entry_id'] : '';
+            $pay_by_date    =   (isset($_POST['pay_by_date'])) ? $_POST['pay_by_date'] : '';
+            $return         =   [];
+            $formid         =   30;
+            if(empty($entry_id)){
+                $return['status']   =   false;
+                $return['message']  =   'Oops, something went wrong, please refresh the page and try again. Thank you!';
+            }else if(empty($pay_by_date)){
+                $return['status']   =   false;
+                $return['message']  =   'Pay by date is required!';
+            }else{
+                $entry_meta[] = array(
+                    'name'  =>  'entry_pay_by_date',
+                    'value' =>  $pay_by_date,
+                );
+                Forminator_API::update_entry_meta($formid, $entry_id, $entry_meta);
+
+                $return['status']   =   true;
+                $return['message']  =   'Updated Successfully!';
+                $return['url']      =   site_url().'/staff-dashboard/?view=billing';
+            }
+            echo json_encode($return);
+            exit();
         }
     }
     CRMCustmizationsHelper::init();
